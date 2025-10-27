@@ -27,4 +27,4 @@ jobs:
       - name: Deploy files
         run: |
           oc project ffisa-dev
-          oc apply -f networking.yml
+          oc apply -f ./
