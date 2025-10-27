@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-a-to-b-egress
+  namespace: ffisa-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: mi-app       # 🔹 Aplica esta regla a los pods del backend
+  policyTypes:
+    - Egress            # 🔹 Solo controlamos el tráfico entrante (hacia el backend)
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: mi-app-2   # 🔹 Solo los pods con esta label pueden acceder
+      ports:
+        - protocol: TCP
+          port: 3000          # 🔹 Solo en este puerto
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-a-to-b-ingress
+  namespace: ffisa-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: mi-app-2       # 🔹 Aplica esta regla a los pods del backend
+  policyTypes:
+    - Ingress            # 🔹 Solo controlamos el tráfico entrante (hacia el backend)
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: mi-app   # 🔹 Solo los pods con esta label pueden acceder
+      ports:
+        - protocol: TCP
+          port: 3000          # 🔹 Solo en este puerto
